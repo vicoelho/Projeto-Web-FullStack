@@ -150,10 +150,99 @@ body {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
-.Logado {
-    display: none;
+.apiStart{
+    display: flex;
+    text-align: center;
+    background-color: rgb(255, 255, 255);
+    margin: 0px;
+    padding: 0px;
+    
+}
+.ImgApi{
+    height: 400px;
+}
+.pInfo{
+    margin: 0px;
+    font-size: 30px;
+    text-align: left;
+}
+.InputApi{
+    margin-top: 50px;
+}
+.Latitude{
+    font-size: 25px;
+}
+#ComboLat{
+    width: 60px;
+    height: 30px;
+    margin-left: 40px;
+}
+#ComboLon{
+    width: 60px;
+    height: 30px;
+    margin-left: 20px; 
+}
+#ValLat{
+    width: 100px;
+    height: 30px;
+    margin-left: 5px;
+}
+.Longitude{
+    font-size: 25px;
+}
+#ValLon{
+    width: 100px;
+    height: 30px;
+    margin-left: 6px;
+}
+.apiLatitude{
+    margin-top: 40px;
+    text-align: left;
+}
+.apiLongitude{
+    text-align: left;
 }
 
+#BuscarLoc{
+    font-size: 15px;
+    border-top: 10px;
+    border-bottom: 10px;
+    border-left: 15px;
+    border-right: 15px;
+    border-style: solid;
+    border-color: #23272a;
+    border-radius: 50px;
+    background-color: #23272a;
+    color: white;
+}
+
+.apiLogin{
+    background-color: rgb(246, 246, 246);
+    display: block;
+    text-align: center;
+    margin: 0px;
+    padding: 0px;
+}
+.login{
+    
+}
+#LoginUser{
+    width: 200px;
+    height: 30px;
+    margin-left: 6px;
+}
+#LoginEntrar{
+    font-size: 15px;
+    border-top: 10px;
+    border-bottom: 10px;
+    border-left: 15px;
+    border-right: 15px;
+    border-style: solid;
+    border-color: #23272a;
+    border-radius: 50px;
+    background-color: #23272a;
+    color: white;
+}
 @media all and (max-width: 500px) {
     .Tela{
         width: auto;
@@ -238,4 +327,5 @@ body {
     .MeioMob {
         display: block;
     }
+
 }
