@@ -101,51 +101,45 @@
             </div>
         </div>
 
-        <section class="apiStart">
-            <div class="apiLatitude">
-                <p>
-                    Atenção!!! Recentemente o Discord criou uma nova utilidade para os usuários.<br>
-                    Você foi sequestrado? Colocado em cativeiro? Drogado pela ex ciumenta? Nós te ajudamos!!<br>
-                    Se não souber se está em terra firme, ou no meio do vasto oceano pacífico ao lado de cargas suspeitas, coloque as coordenadas:
-                </p>
-                <label class="latitude">Latitude:</label>
-                <select name="latitude" id="ComboLat">
-                    <option value="Norte">Norte</option>
-                    <option value="Sul">Sul</option>
-                </select>
-                <input type="text" id="ValLat"><br>
-            </div>
-            <div class="apiLongitude">
-                <label class="longitude">Longitude:</label>
-                <select name="Longitude" id="ComboLon">
-                    <option value="Oeste">Oeste</option>
-                    <option value="Leste">Leste</option>
-                </select>
-                <input type="text" id="ValLon"><br>
-                <button id="BuscarLoc">Buscar</button>
-            </div>
-        </section>
-
-        <fieldset class="FieldLogin">
-            <legend>Login</legend>
+        <div class="apiLogin">
             <div>
                 <label class="login">Usuario:</label>
-                <input type="text" id="LoginUser"><br>
+                <input type="text" id="LoginUser"><br><br>
             </div>
             <div>
                 <label class="login">Senha:</label>
-                <input type="password" id="LoginSenha"><br>
-                <button id="LoginEntrar">Entrar</button>
+                <input type="text" id="LoginSenha"><br><br>
             </div>
-        </fieldset>
-
-        <div class="Logado">
-            <p>
-                Você está logado como: 
-            </p>
-            <p id="UsuarioLogado"></p>
-            <button id="LogadoSair">Sair</button>
+            <button id="LoginEntrar">Entrar</button>
         </div>
+
+        <section class="apiStart">
+            <img src="gpsApi_img"  class="ImgApi">
+            <div class="InputApi">
+                <p class="pInfo">
+                    Atenção!!! Recentemente o Discord criou uma nova utilidade para os usuários.
+                    Você foi sequestrado? Colocado em cativeiro? Drogado pela ex ciumenta? Nós te ajudamos!!
+                    Se não souber se está em terra firme, ou no meio do vasto oceano pacífico ao lado de cargas suspeitas, coloque as coordenadas:
+                </p>
+                <div class="apiLatitude">
+                    <label class="latitude">Latitude:</label>
+                    <select name="latitudeComb" id="ComboLat">
+                        <option value="Norte">Norte</option>
+                        <option value="Sul">Sul</option>
+                    </select>
+                    <input type="text" id="ValLat"><br><br>
+                </div>
+                <div class="apiLongitude">
+                    <label class="longitude">Longitude:</label>
+                    <select name="Longitude" id="ComboLon">
+                        <option value="Oeste">Oeste</option>
+                        <option value="Leste">Leste</option>
+                    </select>
+                    <input type="text" id="ValLon"><br><br>
+                    <button id="BuscarLoc">Buscar</button>
+                </div>
+            </div>
+        </section>
 
         <script type="text/javascript">
             
@@ -196,30 +190,7 @@
                     .then(response => {
                         response.json()
                         .then(json => {
-                            var DivTerraAgua = document.querySelector(".apiStart")
-                            var TerraAgua = document.querySelector("#TerraAgua")
-                            var exist = document.body.contains(TerraAgua)
-
-                            if (!exist) {
-                                var elemento = document.createElement("p")
-                                    elemento.id = "TerraAgua"
-                                    elemento.innerHTML = "Pelo que pudemos ver aqui pelas coordenadas que você informou percebemos que sua localização é "
-
-                                if (json.water) {
-                                    elemento.innerHTML += "no oceano"
-                                } else {
-                                    elemento.innerHTML += "em terra firme"
-                                }
-
-                                document.querySelector(".apiStart").appendChild(elemento)
-                            } else {
-                                TerraAgua.innerHTML = "Pelo que pudemos ver aqui pelas coordenadas que você informou percebemos que sua localização é "
-                                if (json.water) {
-                                    TerraAgua.innerHTML += "no oceano"
-                                } else {
-                                    TerraAgua.innerHTML += "em terra firme"
-                                }
-                            }
+                            console.log(json)
                         });
                     })
                     .catch(erro => {
@@ -228,7 +199,7 @@
                 }
             );
 
-            document.querySelector("#LoginEntrar").addEventListener("click", 
+            document.querySelector('#LoginEntrar').addEventListener("click", 
                 function (evento) {
                     const config = {
                         method: "GET",
@@ -242,81 +213,25 @@
                         .then(json => {
                             console.log(json)
                             var Users = json.data
-                            var NomeUsuario
-
+                            
                             var cadastrado = false
                             for (c in Users) {
                                 if (document.querySelector("#LoginUser").value === Users[c].email) {
                                     cadastrado = true
-                                    NomeUsuario = Users[c].first_name + " " + Users[c].last_name
                                     break
                                 }
                             }
 
                             if (cadastrado) {
-                                if (document.querySelector("#LoginSenha").value.length < 3) {
-                                    const MsgERRO = document.querySelector("#MsgERROLogin")
-                                    const exist = document.body.contains(MsgERRO)
-                                    if (!exist) {
-                                        var elemento = document.createElement("p")
-                                            elemento.id = "MsgERROLogin"
-                                            elemento.innerHTML = "Senha inválida"
-                                            elemento.style.color = "rgb(255, 0, 0)"
-                                        document.querySelector(".FieldLogin").appendChild(elemento)
-                                    } else {
-                                        MsgERRO.innerHTML = "Senha inválida"
-                                    }
-                                    return
-                                }
                                 document.querySelector(".FieldLogin").style.display = "none"
-                                document.querySelector(".Logado").style.display = "block"
-                                var elemento = document.createElement("p")
-                                    elemento.id = "UserLogado"
-                                    elemento.innerHTML = NomeUsuario
-
-                                var addelement = document.querySelector("#LogadoSair")
-                                document.querySelector(".Logado").insertBefore(elemento, addelement)
                             } else {
-                                const MsgERRO = document.querySelector("#MsgERROLogin")
-                                const exist = document.body.contains(MsgERRO)
-                                if (!exist) {
-                                    var elemento = document.createElement("p")
-                                        elemento.id = "MsgERROLogin"
-                                        elemento.innerHTML = "Usuario não cadastrado"
-                                        elemento.style.color = "rgb(255, 0, 0)"
-                                    document.querySelector(".FieldLogin").appendChild(elemento)
-                                } else {
-                                    MsgERRO.innerHTML = "Usuario não cadastrado"
-                                }
+                                console.log("Usuario não cadastrado")
                             }
                         })
                     })
                     .catch(erro => {
                         console.log(erro.message)
                     })
-                }
-            );
-        
-            document.querySelector("#LogadoSair").addEventListener("click",
-                function(evento) {
-                    console.log("asidnoaisdni")
-
-                    const DivLogado = document.querySelector(".Logado")
-                    const UserLogado = document.querySelector("#UserLogado")
-                    const existuserlogado = document.body.contains(UserLogado)
-                    const FieldLogin = document.querySelector(".FieldLogin")
-                    const MsgERRO = document.querySelector("#MsgERROLogin")
-                    const existmsgerro = document.body.contains(MsgERRO)
-
-                    if (existuserlogado) {
-                        DivLogado.removeChild(UserLogado)
-                    }
-                    DivLogado.style.display = "none"
-
-                    if (existmsgerro) {
-                        FieldLogin.removeChild(MsgERRO)
-                    }
-                    FieldLogin.style.display = "block"
                 }
             );
         </script>
