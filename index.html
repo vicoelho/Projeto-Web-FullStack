@@ -225,21 +225,21 @@
                             if (!exist) {
                                 var elemento = document.createElement("p")
                                     elemento.id = "TerraAgua"
-                                    elemento.innerHTML = "Pelo que pudemos ver aqui pelas coordenadas que você informou percebemos que sua localização é "
+                                    elemento.innerHTML = "Então colega pelas coordenadas que você informou, percebemos que sua localização é "
 
                                 if (json.water) {
-                                    elemento.innerHTML += "no oceano"
+                                    elemento.innerHTML += "no oceano, é bom que você goste de peixe."
                                 } else {
-                                    elemento.innerHTML += "em terra firme"
+                                    elemento.innerHTML += "em terra firme, recomendo saber karate ou ter as duas pernas."
                                 }
 
                                 document.querySelector(".InputApi").appendChild(elemento)
                             } else {
-                                TerraAgua.innerHTML = "Pelo que pudemos ver aqui pelas coordenadas que você informou percebemos que sua localização é "
+                                TerraAgua.innerHTML = "Então colega pelas coordenadas que você informou, percebemos que sua localização é "
                                 if (json.water) {
-                                    TerraAgua.innerHTML += "no oceano"
+                                    TerraAgua.innerHTML += "no oceano, é bom que você goste de peixe."
                                 } else {
-                                    TerraAgua.innerHTML += "em terra firme"
+                                    TerraAgua.innerHTML += "em terra firme, recomendo saber karate ou ter as duas pernas."
                                 }
                             }
                         });
