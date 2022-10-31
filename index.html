@@ -102,20 +102,25 @@
         </div>
 
         <div class="apiLogin">
-            <legend>Login</legend>
-            <div>
-                <label class="login">Usuario:</label>
-                <input type="text" id="LoginUser"><br>
+            <div class="SeparaLogin">
+                <p class="LoginParagrafo">
+                    Login:
+                </p>
+                <div>
+                    <label class="login">Usuario:</label>
+                    <input type="text" id="LoginUser"><br><br>
+                </div>
+                <div>
+                    <label class="loginSenha">Senha:</label>
+                    <input type="password" id="LoginSenha"><br><br>
+                    <button id="LoginEntrar">Entrar</button>
+                </div>
             </div>
-            <div>
-                <label class="login">Senha:</label>
-                <input type="password" id="LoginSenha"><br>
-                <button id="LoginEntrar">Entrar</button>
-            </div>
+            <img src="LOGIN_img"  class="ImgLogin">
         </div>
 
         <div class="Logado">
-            <p>
+            <p class="LoginParagrafo">
                 Você está logado como: 
             </p>
             <p id="UsuarioLogado"></p>
@@ -153,10 +158,8 @@
         <script type="text/javascript">
             window.onload = function() {
                 var UsuarioLogado = document.cookie.split('=')[1]
-                if (UsuarioLogado == -1) {
-                    UsuarioLogado = ""
-                }
-                if (!(UsuarioLogado === "" || UsuarioLogado === "undefined")) {
+                console.log(document.cookie)
+                if (!(UsuarioLogado === "" || document.cookie === "")) {
                     document.querySelector(".apiLogin").style.display = "none"
                     document.querySelector(".Logado").style.display = "block"
                     var elemento = document.createElement("p")
