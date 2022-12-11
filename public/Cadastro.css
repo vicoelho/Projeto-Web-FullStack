@@ -1,0 +1,59 @@
+* {
+    margin: 0px;
+    border: 0px;
+}
+
+.ImagenFundo {
+    position: absolute;
+}
+
+.Registro {
+    position: relative;
+    display: flex;
+    width: auto;
+    justify-content: center;
+}
+
+.Fundo {
+    display: flex;
+    flex-direction: column;
+    background-color: #383c3c;
+    width: 500px;
+    gap: 20px;
+}
+
+.LabelTitulo {
+    font-size: 25px;
+    color: white;
+}
+
+.Formulario {
+    display: flex;
+    flex-direction: column;
+    width: min-content;
+}
+
+label{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.LabelCad {
+    font-size: 12px;
+    color: #b9bbbe;
+}
+
+input {
+    width: 400px;
+    height: 30px;
+    color: white;
+}
+
+.InputText {
+    width: 400px;
+    height: 30px;
+    background-color: #282424;
+    color: white;
+}
+.InputSubmit {
+    background-color: #4854c8;
+}
