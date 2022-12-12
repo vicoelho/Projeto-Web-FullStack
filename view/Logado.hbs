@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="Logado.css">
+    <title>Logado</title>
 </head>
 <body>
-    <p>{{Usuario}}</p>
-    
+    <p class="nomeUser">Usuário: {{Usuario}}</p>
+    <div class="divGeral">
+    <div class="divAddTexto">Adicionar Texto<br>
+        <input type="text" class="inputDivTexto">
+    </div>
+    <div class="divAddFoto">Adicionar Foto</div>
+    <div class="divAddVideo">Adicionar Vídeo</div>
+    </div>
     <a href="/logout">Desconectar</a>
 </body>
 </html>
