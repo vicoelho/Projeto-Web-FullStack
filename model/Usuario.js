@@ -18,19 +18,20 @@ module.exports = class Usuario {
         const db = conn.db().collection('Usuarios');
         let jaCadastrado = await this.find(usuario, "User");
         if (jaCadastrado.length > 0) {
-            conn.close;
+            conn.close();
             return 10;
         }
         jaCadastrado = await this.find(email, "Email");
         if (jaCadastrado.length > 0) {
-            conn.close;
+            conn.close();
             return 11;
         }
-        db.insertOne({
+        await db.insertOne({
             User: usuario,
             Email: email,
             Senha: senha
         });
+        conn.close();
         return 1;
     };
 

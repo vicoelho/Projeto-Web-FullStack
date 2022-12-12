@@ -3,6 +3,7 @@ let http = require('http'),
     express = require('express'),
     app = express(),
     Usuario = require("./model/Usuario"),
+    Postagem = require("./model/Postagens"),
     session = require('express-session');
 
 app.set('view engine', 'hbs');
@@ -84,6 +85,7 @@ app.post('/logar', async (req, res) => {
 app.get('/logado', async (req, res) => {
     if (!(req.session && req.session.token)) {
         res.redirect('/index');
+        return;
     }
     
     let Cadastrado = await Usuario.find(req.session.token, "User");
@@ -92,12 +94,24 @@ app.get('/logado', async (req, res) => {
         res.redirect('/index');
         return;
     }
-
-    res.render('logado', {Usuario: Cadastrado[0].User});
+    let Postagens = await Postagem.findTexto();
+    res.render('logado', {Usuario: Cadastrado[0].User, Postagem: Postagens});
 });
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/index');
+});
+app.post('/PostarTexto', async (req, res) => {
+    let User = await Usuario.find(req.session.token, "User");
+    let Post = req.body.Texto;
+    let Postado = await Postagem.insertTexto(User[0].User, Post);
+    if (Postado === 0) {
+        let Postagens = await Postagem.findTexto();
+        res.render('logado', {ErroTexto: "O texto deve possuir um minimo de 3 caracteres", Postagem: Postagens});
+        return;
+    };
+
+    res.redirect('logado');
 });
 
 app.listen(3000);
