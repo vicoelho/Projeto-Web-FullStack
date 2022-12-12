@@ -104,6 +104,10 @@ app.get('/logout', (req, res) => {
 app.post('/PostarTexto', async (req, res) => {
     let User = await Usuario.find(req.session.token, "User");
     let Post = req.body.Texto;
+    if (User.length === 0) {
+        res.render('index', {ErrorMsg: 'Usuario não logado', Usuario: '', Senha: '  '});
+        return;
+    }
     let Postado = await Postagem.insertTexto(User[0].User, Post);
     if (Postado === 0) {
         let Postagens = await Postagem.findTexto();

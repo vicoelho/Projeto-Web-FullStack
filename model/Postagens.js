@@ -5,6 +5,8 @@ module.exports = class Postagens {
     static async insertTexto(Usuario, Post){
         const conn = await MongoClient.connect(MongoURL);
         const db = conn.db().collection('Postagens');
+        let now = new Date;
+        let DateTime = now.getFullYear().toString()+("00"+now.getMonth()).slice(-2)+("00"+now.getDate()).slice(-2)+("00"+now.getHours()).slice(-2)+("00"+now.getMinutes()).slice(-2)+("00"+now.getSeconds()).slice(-2);
         if (Post.length < 3) {
             conn.close()
             return 0;
@@ -12,7 +14,8 @@ module.exports = class Postagens {
         await db.insertOne({
             User: Usuario,
             Content: Post,
-            Type: "Text"
+            Type: "Text",
+            DateTime: DateTime
         });
         conn.close();
         return 1;
@@ -21,7 +24,8 @@ module.exports = class Postagens {
     static async findTexto() {
         const conn = await MongoClient.connect(MongoURL);
         const db = conn.db().collection('Postagens');
-        let result = await db.find().toArray();
+        let sort = {DateTime: -1};
+        let result = await db.find().sort(sort).toArray();
         conn.close();
         return result;
     }
