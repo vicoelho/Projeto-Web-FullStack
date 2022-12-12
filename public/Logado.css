@@ -5,7 +5,8 @@
 
 .nomeUser{
     margin-top: 50px;
-    margin-left: 300px;
+    margin-left: 700px;
+    font-size: 30px;
 }
 .divGeral{
     display: flex;
@@ -15,22 +16,45 @@
     border-style: solid;
     border-color: black;
     border-radius: 50px;
+    margin-left: 200px;
+    width: 400px;
+    height: 400px;
 }
 .divAddFoto{
     border-width: 2px;
     border-style: solid;
     border-color: black;
     border-radius: 50px;
+    width: 400px;
+    height: 400px;
 }
 .divAddVideo{
     border-width: 2px;
     border-style: solid;
     border-color: black;
     border-radius: 50px;
+    width: 400px;
+    height: 400px;
 }
 .inputDivTexto{
     border-width: 2px;
     border-style: solid;
     border-color: black;
     border-radius: 50px;
+    margin-left: 100px;
+}
+.desconectar{
+    margin-top: 100px;
+}
+.postar{
+    margin-left: 160px;
+}
+.labelAddTexto{
+    margin-left: 140px;
+}
+.labelAddFoto{
+    margin-left: 140px;
+}
+.labelAddVideo{
+    margin-left: 140px;
 }
