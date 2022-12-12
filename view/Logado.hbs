@@ -10,15 +10,20 @@
 <body>
     <p class="nomeUser">Usuário: {{Usuario}}</p>
     <div class="divGeral">
-    <form action="./PostarTexto" method="POST" class="divAddTexto">Adicionar Texto<br>
-        <input type="text" name="Texto" class="inputDivTexto">
-        <input type="submit" value="Postar">
+    <form action="./PostarTexto" method="POST" class="divAddTexto"><br>
+        <label for="" class="labelAddTexto">Adicionar Texto</label><br>
+        <input type="text" name="Texto" class="inputDivTexto"><br><br>
+        <input type="submit" value="Postar" class="postar">
         <p>{{ErroTexto}}</p>
     </form>
-    <div class="divAddFoto">Adicionar Foto</div>
-    <div class="divAddVideo">Adicionar Vídeo</div>
+    <div class="divAddFoto">
+        <label for="" class="labelAddFoto">Adicionar foto</label>
     </div>
-    <a href="/logout">Desconectar</a>
+    <div class="divAddVideo">
+        <label for="" class="labelAddVideo">Adicionar Vídeo</label>
+    </div>
+    </div>
+    <a href="/logout" class="desconectar">Desconectar</a>
 
     <div>
         {{#Postagem}}
