@@ -8,27 +8,49 @@
     <title>Logado</title>
 </head>
 <body>
-    <p class="nomeUser">Usuário: {{Usuario}}</p>
+    <p class="nomeUser">Usuário: {{Usuario}}</p><br><br>
     <div class="divGeral">
-    <form action="./PostarTexto" method="POST" class="divAddTexto"><br>
-        <label for="" class="labelAddTexto">Adicionar Texto</label><br>
-        <input type="text" name="Texto" class="inputDivTexto"><br><br>
-        <input type="submit" value="Postar" class="postar">
+    <form action="./PostarTexto" method="POST" class="divAddTexto"><br><label class="lb_addTexto">Adicionar Texto:</label></Adicionar><br>
+        <input type="text" name="Texto" class="inputDivTexto">
+        <input type="submit" value="Postar" class="btn_post">
         <p>{{ErroTexto}}</p>
     </form>
-    <div class="divAddFoto">
-        <label for="" class="labelAddFoto">Adicionar foto</label>
+    <form action="/PostarImagens" method="POST" enctype="multipart/form-data" class="divAddFoto"><label class="lb_addFoto">Adicionar Foto:</label><br>
+        <input name="imagem" type="file">
+        <input type="submit" value="Postar" class="btn_post">
+        <p>{{ErroImagem}}</p>
+    </form>
+    <form action="/PostarVideos" method="POST" enctype="multipart/form-data" class="divAddVideo"><label class="lb_addVideo">Adicionar Vídeo:</label><br>
+        <input name="video" type="file">
+        <input type="submit" value="Postar" class="btn_post">
+        <p>{{ErroVideo}}</p>
+    </form>
     </div>
-    <div class="divAddVideo">
-        <label for="" class="labelAddVideo">Adicionar Vídeo</label>
+    <div class="div_radio">
+    <form action="/logado" method="get">
+        <label class="filtro_user">Postagens do usuário:</label>
+        <input name="PostUser" type="text" class="input_user"><br>
+
+        <input type="radio" id="todos" name="PostType" value="*" checked>
+        <label for="todos">Todas</label><br>
+        <input type="radio" id="texto" name="PostType" value="Text">
+        <label for="texto">Texto</label><br>
+        <input type="radio" id="imagem" name="PostType" value="Img">
+        <label for="imagem">Imagem</label><br>
+        <input type="radio" id="video" name="PostType" value="Vid">
+        <label for="video">Video</label><br>
+
+        <input type="submit" value="Filtrar" class="btn_post">
+    </form>
     </div>
-    </div>
-    <a href="/logout" class="desconectar">Desconectar</a>
+    <a href="/logout" class="btn_desconectar">Desconectar</a>
 
     <div>
         {{#Postagem}}
             <p>Postagem realizada por: {{User}}</p>
-            <p>{{Content}}</p>
+            <p>{{Texto}}</p>
+            <img src="{{PathImg}}">
+            <video src="{{PathVid}}" type="video/mp4" autoplay></video>
         {{/Postagem}}
     </div>
 </body>

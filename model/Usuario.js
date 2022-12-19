@@ -29,7 +29,8 @@ module.exports = class Usuario {
         await db.insertOne({
             User: usuario,
             Email: email,
-            Senha: senha
+            Senha: senha,
+            Postagens: 0
         });
         conn.close();
         return 1;
@@ -47,4 +48,13 @@ module.exports = class Usuario {
         conn.close();
         return result;
     };
+
+    static async attPost(Usuario) {
+        const conn = await MongoClient.connect(MongoURL);
+        const db = conn.db().collection('Usuarios');
+        var Select = {User: Usuario};
+        var Update = {$inc: {Postagens: 1}};
+        await db.updateOne(Select, Update);
+        conn.close();
+    }
 }

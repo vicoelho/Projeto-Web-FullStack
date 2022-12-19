@@ -4,11 +4,13 @@ let http = require('http'),
     app = express(),
     Usuario = require("./model/Usuario"),
     Postagem = require("./model/Postagens"),
-    session = require('express-session');
+    session = require('express-session'),
+    multer = require('multer');
 
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'view'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'Uploads')));
 app.use(express.urlencoded({extended: false}));
 app.use(session({
     secret: 'segredo',
@@ -70,7 +72,7 @@ app.post('/logar', async (req, res) => {
     }
 
     let Cadastrado = await Usuario.find(User, "User");
-    if (!Cadastrado.length === 0) {
+    if (Cadastrado.length === 0) {
         res.render('index', {ErrorMsg: 'Usuario não cadastrado', Usuario: User, Senha: Senha});
         return;
     }
@@ -79,6 +81,7 @@ app.post('/logar', async (req, res) => {
         return;
     }
     req.session.token = Cadastrado[0].User;
+    req.session.numpostagens = Cadastrado[0].Postagens;
     req.session.save();
     res.redirect('/logado');
 });
@@ -94,7 +97,7 @@ app.get('/logado', async (req, res) => {
         res.redirect('/index');
         return;
     }
-    let Postagens = await Postagem.findTexto();
+    let Postagens = await Postagem.Feed(req.query.PostUser, req.query.PostType);
     res.render('logado', {Usuario: Cadastrado[0].User, Postagem: Postagens});
 });
 app.get('/logout', (req, res) => {
@@ -110,11 +113,61 @@ app.post('/PostarTexto', async (req, res) => {
     }
     let Postado = await Postagem.insertTexto(User[0].User, Post);
     if (Postado === 0) {
-        let Postagens = await Postagem.findTexto();
+        let Postagens = await Postagem.Feed();
         res.render('logado', {ErroTexto: "O texto deve possuir um minimo de 3 caracteres", Postagem: Postagens});
         return;
     };
-
+    let PostNum = await Usuario.find(req.session.token, "User");
+    if (!PostNum.length === 0) {
+        req.session.destroy();
+        res.redirect('/index');
+        return;
+    }
+    req.session.numpostagens = PostNum[0].Postagens;
+    req.session.save();
+    res.redirect('logado');
+});
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'Uploads/');
+    },
+    filename: function(req, file, cb) {
+        cb(null, req.session.token + req.session.numpostagens + path.extname(file.originalname));
+    }
+})
+const upload = multer({storage})
+app.post('/PostarImagens', upload.single("imagem"), async (req, res) => {
+    const Formato = ['image/jpeg', 'image/png', 'image/gif'].includes(req.file.mimetype);
+    if (!Formato) {
+        let Postagens = await Postagem.Feed();
+        res.render('logado', {ErroImagem: "Formato de imagem inválido", Postagem: Postagens});
+        return;
+    };
+    await Postagem.insertImagem(req.session.token, req.file.filename);
+    let PostNum = await Usuario.find(req.session.token, "User");
+    if (!PostNum.length === 0) {
+        req.session.destroy();
+        res.redirect('/index');
+        return;
+    }
+    req.session.numpostagens = PostNum[0].Postagens;
+    req.session.save();
+    res.redirect('logado');
+});
+app.post('/PostarVideos', upload.single("video"), async (req, res) => {
+    if (req.file.mimetype != "video/mp4") {
+        res.render('logado', {ErroVideo: "Formato de video inválido", Postagem: Postagens});
+        return;
+    };
+    await Postagem.insertVideo(req.session.token, req.file.filename);
+    let PostNum = await Usuario.find(req.session.token, "User");
+    if (!PostNum.length === 0) {
+        req.session.destroy();
+        res.redirect('/index');
+        return;
+    }
+    req.session.numpostagens = PostNum[0].Postagens;
+    req.session.save();
     res.redirect('logado');
 });
 

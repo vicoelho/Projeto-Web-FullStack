@@ -4,57 +4,77 @@
 }
 
 .nomeUser{
-    margin-top: 50px;
-    margin-left: 700px;
+    margin-top: 30px;
+    margin-left: 660px;
     font-size: 30px;
 }
 .divGeral{
     display: flex;
 }
 .divAddTexto{
+    width: 280px;
+    height: 70px;
     border-width: 2px;
     border-style: solid;
     border-color: black;
-    border-radius: 50px;
-    margin-left: 200px;
-    width: 400px;
-    height: 400px;
+    border-radius: 10px;
+    margin-left: 80px;
 }
 .divAddFoto{
+    width: 280px;
+    height: 70px;
     border-width: 2px;
     border-style: solid;
     border-color: black;
-    border-radius: 50px;
-    width: 400px;
-    height: 400px;
+    border-radius: 10px;
+    margin-left: 210px;
+
 }
 .divAddVideo{
+    width: 280px;
+    height: 70px;
     border-width: 2px;
     border-style: solid;
     border-color: black;
-    border-radius: 50px;
-    width: 400px;
-    height: 400px;
+    border-radius: 10px;
+    margin-left: 290px;
+}
+.lb_addTexto{
+    margin-left: 12px;
+    font-size: 20px;
+}
+.btn_post{
+    font-size: 13px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: black;
 }
 .inputDivTexto{
     border-width: 2px;
     border-style: solid;
     border-color: black;
     border-radius: 50px;
-    margin-left: 100px;
+    margin-left: 10px;
 }
-.desconectar{
-    margin-top: 100px;
+.lb_addFoto{
+    margin-left: 12px;
+    font-size: 20px;
 }
-.postar{
-    margin-left: 160px;
+.lb_addVideo{
+    margin-left: 12px;
+    font-size: 20px;
 }
-.labelAddTexto{
-    margin-left: 140px;
+.input_user{
+    margin-top: 20px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
 }
-.labelAddFoto{
-    margin-left: 140px;
+.div_radio{
+    margin-left: 20px;
+    font-size: 18px;
 }
-.labelAddVideo{
-    margin-left: 140px;
+.btn_desconectar{
+    margin-left: 260px;
+    font-size: 17px;
 }
