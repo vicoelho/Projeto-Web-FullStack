@@ -97,7 +97,7 @@ app.get('/logado', async (req, res) => {
         res.redirect('/index');
         return;
     }
-    let Postagens = await Postagem.Feed();
+    let Postagens = await Postagem.Feed(req.query.PostUser, req.query.PostType);
     res.render('logado', {Usuario: Cadastrado[0].User, Postagem: Postagens});
 });
 app.get('/logout', (req, res) => {
@@ -117,7 +117,14 @@ app.post('/PostarTexto', async (req, res) => {
         res.render('logado', {ErroTexto: "O texto deve possuir um minimo de 3 caracteres", Postagem: Postagens});
         return;
     };
-
+    let PostNum = await Usuario.find(req.session.token, "User");
+    if (!PostNum.length === 0) {
+        req.session.destroy();
+        res.redirect('/index');
+        return;
+    }
+    req.session.numpostagens = PostNum[0].Postagens;
+    req.session.save();
     res.redirect('logado');
 });
 const storage = multer.diskStorage({
@@ -136,16 +143,31 @@ app.post('/PostarImagens', upload.single("imagem"), async (req, res) => {
         res.render('logado', {ErroImagem: "Formato de imagem inválido", Postagem: Postagens});
         return;
     };
-    Postagem.insertImagem(req.session.token, req.file.filename);
+    await Postagem.insertImagem(req.session.token, req.file.filename);
+    let PostNum = await Usuario.find(req.session.token, "User");
+    if (!PostNum.length === 0) {
+        req.session.destroy();
+        res.redirect('/index');
+        return;
+    }
+    req.session.numpostagens = PostNum[0].Postagens;
+    req.session.save();
     res.redirect('logado');
 });
 app.post('/PostarVideos', upload.single("video"), async (req, res) => {
     if (req.file.mimetype != "video/mp4") {
-        let Postagens = await Postagem.Feed();
         res.render('logado', {ErroVideo: "Formato de video inválido", Postagem: Postagens});
         return;
     };
-    Postagem.insertVideo(req.session.token, req.file.filename);
+    await Postagem.insertVideo(req.session.token, req.file.filename);
+    let PostNum = await Usuario.find(req.session.token, "User");
+    if (!PostNum.length === 0) {
+        req.session.destroy();
+        res.redirect('/index');
+        return;
+    }
+    req.session.numpostagens = PostNum[0].Postagens;
+    req.session.save();
     res.redirect('logado');
 });
 

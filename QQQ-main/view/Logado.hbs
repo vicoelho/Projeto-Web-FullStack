@@ -26,6 +26,20 @@
         <p>{{ErroVideo}}</p>
     </form>
     </div>
+    <form action="/logado" method="get">
+        <input name="PostUser" type="text">
+
+        <input type="radio" id="todos" name="PostType" value="*" checked>
+        <label for="todos">Todas</label><br>
+        <input type="radio" id="texto" name="PostType" value="Text">
+        <label for="texto">Texto</label><br>
+        <input type="radio" id="imagem" name="PostType" value="Img">
+        <label for="imagem">Imagem</label>
+        <input type="radio" id="video" name="PostType" value="Vid">
+        <label for="video">Video</label>
+
+        <input type="submit" value="Filtrar">
+    </form>
     <a href="/logout">Desconectar</a>
 
     <div>

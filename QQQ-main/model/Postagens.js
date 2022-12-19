@@ -18,15 +18,30 @@ module.exports = class Postagens {
             Type: "Text",
             DateTime: DateTime
         });
-        BDUsuario.attPost(Usuario);
+        await BDUsuario.attPost(Usuario);
         conn.close();
         return 1;
     };
-    static async Feed() {
+    static async Feed(PostUser, PostType) {
         const conn = await MongoClient.connect(MongoURL);
         const db = conn.db().collection('Postagens');
+        let find = {};
+        if ((PostUser != null && PostUser != '') && (PostType != null && PostType != '*')) {
+            find =  {
+                User: PostUser,
+                Type: PostType
+            };
+        } else if (PostUser != null && PostUser != '') {
+            find = {
+                User: PostUser
+            };
+        } else if (PostType != null && PostType != '*') {
+            find =  {
+                Type: PostType
+            };
+        };
         let sort = {DateTime: -1};
-        let result = await db.find().sort(sort).toArray();
+        let result = await db.find(find).sort(sort).toArray();
         conn.close();
         return result;
     };
@@ -42,7 +57,7 @@ module.exports = class Postagens {
             Type: "Img",
             DateTime: DateTime
         });
-        BDUsuario.attPost(Usuario);
+        await BDUsuario.attPost(Usuario);
         conn.close();
         return 1;
     };
@@ -58,7 +73,7 @@ module.exports = class Postagens {
             Type: "Vid",
             DateTime: DateTime
         });
-        BDUsuario.attPost(Usuario);
+        await BDUsuario.attPost(Usuario);
         conn.close();
         return 1;
     };
