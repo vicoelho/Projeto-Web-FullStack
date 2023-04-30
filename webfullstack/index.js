@@ -2,12 +2,12 @@ let http = require('http'),
     path = require('path'),
     express = require('express'),
     app = express(),
-    Usuario = require("./model/Usuario"),
-    Postagem = require("./model/Postagens"),
+    Usuario = require("../model/Usuario"),
+    Postagem = require("../model/Postagens"),
     session = require('express-session'),
     multer = require('multer');
 
-app.set('view engine', 'html');
+app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'view'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'Uploads')));
@@ -23,7 +23,11 @@ app.get('/', (req, res) => {
     res.redirect('/index');
 });
 app.get('/index', (req, res) => {
-    res.sendFile(path.join(__dirname, 'view/index.html'));
+    if (req.session && req.session.token) {
+        res.redirect('/logado');
+        return;
+    }
+    res.render('index');
 });
 app.get('/cadastro', (req, res) => {
     res.render('Cadastro');
@@ -55,9 +59,6 @@ app.post('/cadastro_post', async (req, res) => {
     };
 });
 app.post('/logar', async (req, res) => {
-    console.log(req.body);
-    res.send({code: req.body.usuario, msg: req.body.senha});
-    return;
     let User = req.body.Usuario;
     let Senha = req.body.Senha;
     if (User.length < 3) {
