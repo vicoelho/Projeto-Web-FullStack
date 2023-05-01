@@ -59,43 +59,42 @@ app.post('/logar', async (req, res) => {
     let User = req.body.Usuario;
     let Senha = req.body.Senha;
     if (User.length < 3) {
-        res.render('index', {ErrorMsg: 'Usuario inválido, minimo 3 caracteres', Usuario: User, Senha: Senha});
-        res.end();
+        res.send({Logado: false, msg: "Usuário inválido, mínimo 3 caracteres"});
         return;
     }
     if (Senha.length < 3) {
-        res.render('index', {ErrorMsg: 'Senha inválida, minimo 3 caracteres', Usuario: User, Senha: Senha});
+        res.send({Logado: false, msg: 'Senha inválida, minimo 3 caracteres'});
         return;
     }
-
+    
     let Cadastrado = await Usuario.find(User, "User");
     if (Cadastrado.length === 0) {
-        res.render('index', {ErrorMsg: 'Usuario não cadastrado', Usuario: User, Senha: Senha});
+        res.send({Logado: false, msg: 'Usuario não cadastrado'});
         return;
     }
     if (Cadastrado[0].Senha != Senha) {
-        res.render('index', {ErrorMsg: 'Senha incorreta', Usuario: User, Senha: Senha});
+        res.send({Logado: false, msg: 'Senha incorreta'});
         return;
     }
     req.session.token = Cadastrado[0].User;
     req.session.numpostagens = Cadastrado[0].Postagens;
     req.session.save();
-    res.redirect('/logado');
+    res.send({Logado: true, msg: ''});
 });
 app.get('/logado', async (req, res) => {
     if (!(req.session && req.session.token)) {
-        res.redirect('/index');
+        res.sendFile(path.join(__dirname, 'view/index.html'));
         return;
     }
     
     let Cadastrado = await Usuario.find(req.session.token, "User");
     if (!Cadastrado.length === 0) {
         req.session.destroy();
-        res.redirect('/index');
+        res.sendFile(path.join(__dirname, 'view/index.html'));
         return;
     }
     let Postagens = await Postagem.Feed(req.query.PostUser, req.query.PostType);
-    res.render('logado', {Usuario: Cadastrado[0].User, Postagem: Postagens});
+    res.sendFile(path.join(__dirname, 'view/Logado.html'));
 });
 app.get('/logout', (req, res) => {
     req.session.destroy();

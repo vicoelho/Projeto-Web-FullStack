@@ -143,7 +143,13 @@
                 };
                 fetch('./logar', options)
                     .then(Res => Res.json())
-                        .then(Res => console.log(Res.code))
+                        .then(Res => {
+                        if (Res.Logado) {
+                            window.location.href = "./logado";
+                        } else {
+                            ReactDOM.render(Res.msg, MsgError);
+                        }
+                        })
             });
         </script>
     </body>
