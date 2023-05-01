@@ -12,6 +12,7 @@ app.set('views', path.join(__dirname, 'view'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'Uploads')));
 app.use(express.urlencoded({extended: false}));
+app.use(express.json());
 app.use(session({
     secret: 'segredo',
     resave: false,
@@ -26,7 +27,7 @@ app.get('/index', (req, res) => {
     res.sendFile(path.join(__dirname, 'view/index.html'));
 });
 app.get('/cadastro', (req, res) => {
-    res.render('Cadastro');
+    res.sendFile(path.join(__dirname, 'view/Cadastro.html'));
 });
 app.post('/cadastro_post', async (req, res) => {
     let User = req.body.Usuario;
@@ -35,29 +36,26 @@ app.post('/cadastro_post', async (req, res) => {
     let insert = await Usuario.insert(User, Email, Password);
     switch (insert) {
         case 1:
-            res.redirect('/index');
+            res.send({Cadastrado: true, msg: ""});
             break;
         case 10:
-            res.render('Cadastro', {ErrorMsg: "Usuario já cadastrado", Usuario: User, Email: Email, Senha: Password});
+            res.send({Cadastrado: false, msg: "Usuario já cadastrado"});
             break;
-        case 11:
-            res.render('Cadastro', {ErrorMsg: "Email já cadastrado", Usuario: User, Email: Email, Senha: Password});
-            break;
-        case 12:
-            res.render('Cadastro', {ErrorMsg: "Usuário inválido, mínimo 3 caracteres", Usuario: User, Email: Email, Senha: Password});
-            break;
-        case 13:
-            res.render('Cadastro', {ErrorMsg: "Email inválido", Usuario: User, Email: Email, Senha: Password});
-            break;
-        case 14:
-            res.render('Cadastro', {ErrorMsg: "Senha inválida, mínimo 3 caracteres", Usuario: User, Email: Email, Senha: Password});
+            case 11:
+                res.send({Cadastrado: false, msg: "Email já cadastrado"});
+                break;
+            case 12:
+                res.send({Cadastrado: false, msg: "Usuário inválido, mínimo 3 caracteres"});
+                break;
+            case 13:
+                res.send({Cadastrado: false, msg: "Email inválido"});
+                break;
+            case 14:
+                res.send({Cadastrado: false, msg: "Senha inválida, mínimo 3 caracteres"});
             break;
     };
 });
 app.post('/logar', async (req, res) => {
-    console.log(req.body);
-    res.send({code: req.body.usuario, msg: req.body.senha});
-    return;
     let User = req.body.Usuario;
     let Senha = req.body.Senha;
     if (User.length < 3) {

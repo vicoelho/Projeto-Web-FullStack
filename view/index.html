@@ -131,8 +131,8 @@
 
             BTNLogin.addEventListener('click', () => {
                 let Corpo = {
-                    Usuario: document.querySelector('#LoginUser').value,
-                    Senha: document.querySelector('#LoginSenha').value
+                    'Usuario': document.querySelector('#LoginUser').value,
+                    'Senha': document.querySelector('#LoginSenha').value
                 };
                 const options = {
                     method: 'POST',
@@ -143,9 +143,8 @@
                 };
                 fetch('./logar', options)
                     .then(Res => Res.json())
-                        .then(Res => console.log(Res.code + " - " + Res.msg))
+                        .then(Res => console.log(Res.code))
             });
-            
         </script>
     </body>
 </html>
