@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="Logado.css">
     <title>Logado</title>
 </head>
-<body onload="CarregaUsuario()">
+<body onload="CarregaPagina()">
     <p class="nomeUser"></p><br><br>
     <div class="divGeral">
     <div class="divAddTexto"><br><label class="lb_addTexto">Adicionar Texto:</label></Adicionar><br>
@@ -27,31 +27,25 @@
     </form>
     </div>
     <div class="div_radio">
-    <form action="/logado" method="get">
-        <label class="filtro_user">Postagens do usuário:</label>
-        <input name="PostUser" type="text" class="input_user"><br>
+        <div>
+            <label class="filtro_user">Postagens do usuário:</label>
+            <input name="PostUser" type="text" class="input_user"><br>
 
-        <input type="radio" id="todos" name="PostType" value="*" checked>
-        <label for="todos">Todas</label><br>
-        <input type="radio" id="texto" name="PostType" value="Text">
-        <label for="texto">Texto</label><br>
-        <input type="radio" id="imagem" name="PostType" value="Img">
-        <label for="imagem">Imagem</label><br>
-        <input type="radio" id="video" name="PostType" value="Vid">
-        <label for="video">Video</label><br>
+            <input type="radio" id="todos" name="PostType" value="*" checked>
+            <label for="todos">Todas</label><br>
+            <input type="radio" id="texto" name="PostType" value="Text">
+            <label for="texto">Texto</label><br>
+            <input type="radio" id="imagem" name="PostType" value="Img">
+            <label for="imagem">Imagem</label><br>
+            <input type="radio" id="video" name="PostType" value="Vid">
+            <label for="video">Video</label><br>
 
-        <input type="submit" value="Filtrar" class="btn_post">
-    </form>
+        <button class="btn_post" id="BtnFiltrar">Filtrar</button>
+        </div>
     </div>
     <a href="/logout" class="btn_desconectar">Desconectar</a>
 
-    <div>
-        {{#Postagem}}
-            <p>Postagem realizada por: {{User}}</p>
-            <p>{{Texto}}</p>
-            <img src="{{PathImg}}">
-            <video src="{{PathVid}}" type="video/mp4" autoplay></video>
-        {{/Postagem}}
+    <div id="Feed">
     </div>
  
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
@@ -62,7 +56,9 @@
             BTNTexto = document.querySelector('#PostarTexto'),
             MsgErroTexto = document.querySelector('.ErrorTexto'),
             BTNImagem = document.querySelector('#PostarImagem'),
-            MsgErroImagem = document.querySelector('.ErrorImagem');
+            MsgErroImagem = document.querySelector('.ErrorImagem'),
+            BTNFiltro = document.querySelector('#BtnFiltrar'),
+            Feed = document.querySelector('#Feed');
         
         function CarregaUsuario() {
             const options = {
@@ -74,6 +70,56 @@
                         ReactDOM.render("Usuário: " + Res.Nome, Usuario);
                     });
         };
+
+        function Postagens(arr) {
+            if (arr.length === 0)
+                return <div style={{ color: 'red' }}>Nenhuma postagem encontrada</div>;
+            return <ul>
+                    {arr.map((i) => <li>
+                            <p>Postagem realizada por: {i.User}</p>
+                            <p>{i.Texto}</p>
+                        </li>)}
+                </ul>;
+        }
+
+        function CarregaPostagens() {
+            let UserPost = document.querySelector('.input_user').value,
+                TypePost = document.getElementsByName('PostType'),
+                Type = "";
+                
+            for (var i = 0; i < TypePost.length; i++){
+                if (TypePost[i].checked) {
+                    Type = TypePost[i].value;
+                    break;
+                }
+            }
+            
+            let Corpo = {
+                'Usuario': UserPost,
+                'Tipo': Type
+            };
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(Corpo)
+            };
+            fetch('./Feed', options)
+                .then(Res => Res.json())
+                    .then(Res => {
+                        ReactDOM.render(Postagens(Res.Postagem), Feed);
+                    });
+        };
+
+        function CarregaPagina() {
+            CarregaUsuario();
+            CarregaPostagens();
+        };
+
+        BTNFiltro.addEventListener('click', () => {
+            CarregaPostagens();
+        });
 
         BTNTexto.addEventListener('click', () => {
             let Corpo = {

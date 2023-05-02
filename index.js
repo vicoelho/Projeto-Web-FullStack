@@ -93,8 +93,11 @@ app.get('/logado', async (req, res) => {
         res.sendFile(path.join(__dirname, 'view/index.html'));
         return;
     }
-    let Postagens = await Postagem.Feed(req.query.PostUser, req.query.PostType);
     res.sendFile(path.join(__dirname, 'view/Logado.html'));
+});
+app.post('/Feed', async (req, res) => {
+    let Postagens = await Postagem.Feed(req.body.Usuario, req.body.Tipo);
+    res.send({Postagem: Postagens});
 });
 app.get('/UserLogado', (req, res) => {
     res.send({Nome: req.session.token});
@@ -113,7 +116,6 @@ app.post('/PostarTexto', async (req, res) => {
     }
     let Postado = await Postagem.insertTexto(User[0].User, Post);
     if (Postado === 0) {
-        let Postagens = await Postagem.Feed();
         res.send({Post: false, msg: "O texto deve possuir um minimo de 3 caracteres"});
         return;
     };
