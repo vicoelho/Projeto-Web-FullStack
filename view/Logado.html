@@ -136,6 +136,9 @@
                 .then(Res => Res.json())
                     .then(Res => {
                         ReactDOM.render(Res.msg, MsgErroTexto);
+                        if (Res.Post) {
+                            CarregaPostagens();
+                        }
                     });
         });
 

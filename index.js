@@ -139,7 +139,7 @@ const storage = multer.diskStorage({
 })
 const upload = multer({storage})
 app.post('/PostarImagens', upload.single("imagem"), async (req, res) => {
-    console.log(req.body + "-" + req.body.imagem);
+    console.log(req.body + "-" + req.imagem);
     let Req = JSON.stringify(req.body);
     console.log(Req);
     //const Formato = ['image/jpeg', 'image/png', 'image/gif'].includes(req.body.File.type);
