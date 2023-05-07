@@ -27,7 +27,7 @@ export default class Discord extends React.Component {
             .then(Res => Res.json())
                 .then(Res => {
                     if (Res.Logado) {
-                        //localStorage.setItem('Token', 'mamaco')
+                        //localStorage.setItem('Token', 'teste')
                         console.log(localStorage.getItem('Token'))
                         //window.location.href = "./logado";
                     } else {
