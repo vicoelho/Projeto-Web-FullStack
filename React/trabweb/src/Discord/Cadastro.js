@@ -26,7 +26,7 @@ export default class Cadastro extends React.Component {
             body: JSON.stringify(Corpo)
         };
         console.log(JSON.stringify(Corpo));
-        fetch('http://localhost:8080/cadastro_post', options)
+        fetch('http://localhost:8080/usuario', options)
             .then(Res => Res.json())
                 .then(Res => {
                     if (Res.Cadastrado) {

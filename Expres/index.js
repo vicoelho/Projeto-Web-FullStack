@@ -22,16 +22,7 @@ app.use(session({
 }));
 app.use(cors());
 
-app.get('/', (req, res) => {
-    res.redirect('/index');
-});
-app.get('/index', (req, res) => {
-    res.sendFile(path.join(__dirname, 'view/index.html'));
-});
-app.get('/cadastro', (req, res) => {
-    res.sendFile(path.join(__dirname, 'view/Cadastro.html'));
-});
-app.post('/cadastro_post', async (req, res) => {
+app.post('/usuario', async (req, res) => {
     let User = req.body.Usuario;
     let Email = req.body.Email;
     let Password = req.body.Senha;
@@ -57,7 +48,7 @@ app.post('/cadastro_post', async (req, res) => {
             break;
     };
 });
-app.post('/logar', async (req, res) => {
+app.post('/login', async (req, res) => {
     let User = req.body.Usuario;
     let Senha = req.body.Senha;
     if (User.length < 3) {
@@ -84,13 +75,14 @@ app.post('/logar', async (req, res) => {
     res.send({Logado: true, msg: '', User: Cadastrado[0].User, Postagens: Cadastrado[0].Postagens});
 });
 
-app.post('/logado', async (req, res) => {
+app.get('/usuario/:id', async (req, res) => {
 /*    if (!(req.session && req.session.token)) {
         res.send({Logado: false});
         return;
     }
 */
-    let Cadastrado = await Usuario.find(req.body.Usuario, "User");
+    console.log(req.params.id)
+    let Cadastrado = await Usuario.find(req.params.id, "User");
     if (!Cadastrado.length === 0) {
         req.session.destroy();
         res.send({Logado: false});
@@ -98,19 +90,17 @@ app.post('/logado', async (req, res) => {
     }
     res.send({Logado: true});
 });
-app.post('/Feed', async (req, res) => {
+app.get('/postagem', async (req, res) => {
     let Postagens = await Postagem.Feed(req.body.Usuario, req.body.Tipo);
     res.send({Postagem: Postagens});
 });
-app.get('/UserLogado', (req, res) => {
-    res.send({Nome: req.session.token});
-});
+
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.send({Logout: true});
 });
 
-app.post('/PostarTexto', async (req, res) => {
+app.post('/postagem', async (req, res) => {
     let User = await Usuario.find(req.body.token, "User");
     let Post = req.body.Texto;
     if (User.length === 0) {
@@ -130,54 +120,6 @@ app.post('/PostarTexto', async (req, res) => {
     req.session.numpostagens = PostNum[0].Postagens;
     req.session.save();
     res.send({Logado:true, Post: true, msg: "Postado com sucesso", Postagens: PostNum[0].Postagens});
-});
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, 'Uploads/');
-    },
-    filename: function(req, file, cb) {
-        cb(null, req.session.token + req.session.numpostagens + path.extname(file.originalname));
-    }
-})
-const upload = multer({storage})
-app.post('/PostarImagens', upload.single("imagem"), async (req, res) => {
-    console.log(req.body + "-" + req.imagem);
-    let Req = JSON.stringify(req.body);
-    console.log(Req);
-    //const Formato = ['image/jpeg', 'image/png', 'image/gif'].includes(req.body.File.type);
-    //console.log(Formato)
-/*    if (!Formato) {
-        let Postagens = await Postagem.Feed();
-        res.send({Post: false, msg: "Formato de imagem inválido"});
-        return;
-    };
-    await Postagem.insertImagem(req.session.token, req.file.filename);
-    let PostNum = await Usuario.find(req.session.token, "User");
-    if (!PostNum.length === 0) {
-        req.session.destroy();
-        res.sendFile(path.join(__dirname, 'view/index.html'));
-        return;
-    }
-    req.session.numpostagens = PostNum[0].Postagens;
-    req.session.save();
-    res.send({Post: true, msg: "Postado com sucesso"});
-*/
-});
-app.post('/PostarVideos', upload.single("video"), async (req, res) => {
-    if (req.file.mimetype != "video/mp4") {
-        res.render('logado', {ErroVideo: "Formato de video inválido", Postagem: Postagens});
-        return;
-    };
-    await Postagem.insertVideo(req.session.token, req.file.filename);
-    let PostNum = await Usuario.find(req.session.token, "User");
-    if (!PostNum.length === 0) {
-        req.session.destroy();
-        res.redirect('/index');
-        return;
-    }
-    req.session.numpostagens = PostNum[0].Postagens;
-    req.session.save();
-    res.redirect('logado');
 });
 
 app.listen(8080);

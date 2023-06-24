@@ -18,17 +18,11 @@ export default class Logado extends React.Component {
         if (!localStorage.getItem('Token')) {
             window.location.href = "./";
         }
-        let Corpo = {
-            'Usuario': localStorage.getItem('Token')
-        };
+        let url = 'http://localhost:8080/usuario/' + localStorage.getItem('Token')
         const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(Corpo)
+            method: 'GET'
         };
-        fetch('http://localhost:8080/logado', options)
+        fetch(url, options)
             .then(Res => Res.json())
                 .then(Res => {
                     if (Res.Logado) {
@@ -61,7 +55,7 @@ export default class Logado extends React.Component {
             },
             body: JSON.stringify(Corpo)
         };
-        fetch('http://localhost:8080/PostarTexto', options)
+        fetch('http://localhost:8080/postagem', options)
             .then(Res => Res.json())
                 .then(Res => {
                     if (!Res.Logado) {
@@ -84,24 +78,12 @@ export default class Logado extends React.Component {
             'Texto': this.state.Texto
         };
         const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(Corpo)
+            method: 'GET'
         };
 
-        let Res = await fetch('http://localhost:8080/Feed', options)
+        let Res = await fetch('http://localhost:8080/postagem', options)
         let Postagens = await Res.json()
-        console.log('fedt '+Postagens.Postagem)
         this.setState({Feed: Postagens.Postagem});
-
-        /*fetch('http://localhost:8080/Feed', options)
-        .then(Res => Res.json())
-        .then(Res => {
-            this.setState({Feed: Res.Postagem});
-            console.log('feed ' + this.state.Feed)
-        });*/
     }
     
     ChangeFiltro(ev){
@@ -110,7 +92,6 @@ export default class Logado extends React.Component {
 
     async Filtrar(){
         await this.Feed();
-        console.log(this.state.Feed)
         if (!this.state.Filtro) {
             return;
         }
@@ -131,8 +112,6 @@ export default class Logado extends React.Component {
             }
         });
         this.setState({Feed: NewFeed});
-        console.log('Novo filt '+NewFeed)
-        console.log('Novo feed '+this.state.Feed)
     }
 
     render(){
