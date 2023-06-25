@@ -6,7 +6,28 @@ let http = require('http'),
     Postagem = require("./model/Postagens"),
     session = require('express-session'),
     multer = require('multer'),
-    cors = require('cors');
+    cors = require('cors'),
+    ws = require('ws'),
+    WebSocket = ws.WebSocketServer;
+
+const server = new WebSocket({port: 8000});
+let conns = [];
+
+server.on('connection', (socket) => {
+    console.log('Nova Conexao');
+    conns.push(socket);
+
+    socket.on('close', () => {
+        console.log('fechando conexao');
+        conns = conns.filter((s) => s === socket);
+    });
+    socket.on('message', (msg) => {
+        console.log(msg);
+        conns.forEach((conn) => {
+            conn.send('${conns.indexOf(socket)}: ${msg}');
+        })
+    })
+});
 
 app.set('view engine', 'html');
 app.set('views', path.join(__dirname, 'view'));
@@ -81,7 +102,6 @@ app.get('/usuario/:id', async (req, res) => {
         return;
     }
 */
-    console.log(req.params.id)
     let Cadastrado = await Usuario.find(req.params.id, "User");
     if (!Cadastrado.length === 0) {
         req.session.destroy();
@@ -122,4 +142,4 @@ app.post('/postagem', async (req, res) => {
     res.send({Logado:true, Post: true, msg: "Postado com sucesso", Postagens: PostNum[0].Postagens});
 });
 
-app.listen(8080);
+app.listen(8080)

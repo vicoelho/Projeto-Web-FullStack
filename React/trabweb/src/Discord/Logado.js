@@ -1,5 +1,5 @@
 import React from 'react';
-import './css/Logado.css'
+import './css/Logado.css';
 
 export default class Logado extends React.Component {
     constructor(props){
@@ -11,7 +11,9 @@ export default class Logado extends React.Component {
             Feed: [],
             Filtro: ''
         };
+        const socket = null;
         this.logado()
+        this.connsocket()
     }
 
     logado(){
@@ -37,6 +39,7 @@ export default class Logado extends React.Component {
     logout(){
         localStorage.removeItem('Token');
         localStorage.removeItem('Postagens');
+        this.socket.close();
         window.location.href = "./";
     }
 
@@ -63,6 +66,7 @@ export default class Logado extends React.Component {
                     };
                     if (Res.Post) {
                         this.setState({Texto: ''});
+                        this.sendsocket()
                         this.Feed();
                     }
                     this.setState({msg: Res.msg});
@@ -73,10 +77,6 @@ export default class Logado extends React.Component {
     }
     
     async Feed(){
-        let Corpo = {
-            'token': localStorage.getItem('Token'),
-            'Texto': this.state.Texto
-        };
         const options = {
             method: 'GET'
         };
@@ -112,6 +112,14 @@ export default class Logado extends React.Component {
             }
         });
         this.setState({Feed: NewFeed});
+    }
+
+    connsocket() {
+        this.socket = new WebSocket("ws://localhost:8000");
+        this.socket.addEventListener('message', (msg) => this.Feed())
+    }
+    sendsocket(){
+        this.socket.send('publicacao');
     }
 
     render(){
