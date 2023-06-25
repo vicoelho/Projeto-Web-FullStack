@@ -8,7 +8,8 @@ let http = require('http'),
     multer = require('multer'),
     cors = require('cors'),
     ws = require('ws'),
-    WebSocket = ws.WebSocketServer;
+    WebSocket = ws.WebSocketServer,
+    cache = require('express-redis-cache');
 
 const server = new WebSocket({port: 8000});
 let conns = [];
@@ -42,6 +43,24 @@ app.use(session({
     cookie: {secure: false}
 }));
 app.use(cors());
+
+cache = cache({
+    prefix: 'redis',
+    host: '127.0.0.1',
+    port: 6379
+});
+
+cache.invalidate = (name) => {
+    return (req, res, next) => {
+        const route_name = name ? name : req.url;
+        if (!cache.connected) {
+            next();
+            return ;
+        }
+        cache.del(route_name, (err) => console.log(err));
+        next();
+    };
+};
 
 app.post('/usuario', async (req, res) => {
     let User = req.body.Usuario;
@@ -97,11 +116,6 @@ app.post('/login', async (req, res) => {
 });
 
 app.get('/usuario/:id', async (req, res) => {
-/*    if (!(req.session && req.session.token)) {
-        res.send({Logado: false});
-        return;
-    }
-*/
     let Cadastrado = await Usuario.find(req.params.id, "User");
     if (!Cadastrado.length === 0) {
         req.session.destroy();
@@ -110,9 +124,10 @@ app.get('/usuario/:id', async (req, res) => {
     }
     res.send({Logado: true});
 });
-app.get('/postagem', async (req, res) => {
-    let Postagens = await Postagem.Feed(req.body.Usuario, req.body.Tipo);
-    res.send({Postagem: Postagens});
+app.get('/postagem', cache.route(), async (req, res) => {
+    res.json(await Postagem.Feed(req.body.Usuario, req.body.Tipo));
+//    let Postagens = await Postagem.Feed(req.body.Usuario, req.body.Tipo);
+//    res.send({Postagem: Postagens});
 });
 
 app.get('/logout', (req, res) => {
@@ -120,7 +135,7 @@ app.get('/logout', (req, res) => {
     res.send({Logout: true});
 });
 
-app.post('/postagem', async (req, res) => {
+app.post('/postagem', cache.invalidate(), async (req, res) => {
     let User = await Usuario.find(req.body.token, "User");
     let Post = req.body.Texto;
     if (User.length === 0) {

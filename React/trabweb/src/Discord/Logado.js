@@ -83,7 +83,13 @@ export default class Logado extends React.Component {
 
         let Res = await fetch('http://localhost:8080/postagem', options)
         let Postagens = await Res.json()
-        this.setState({Feed: Postagens.Postagem});
+        let Textos = [];
+        console.log(Postagens);
+        Postagens.map(Post => {
+            Textos.push(Post);
+        });
+        console.log(Textos);
+        this.setState({Feed: Textos});
     }
     
     ChangeFiltro(ev){
