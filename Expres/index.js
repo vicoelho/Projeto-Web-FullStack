@@ -9,7 +9,8 @@ let http = require('http'),
     cors = require('cors'),
     ws = require('ws'),
     WebSocket = ws.WebSocketServer,
-    cache = require('express-redis-cache');
+    cache = require('express-redis-cache'),
+    bcrypt = require('bcrypt');
 
 const server = new WebSocket({port: 8000});
 let conns = [];
@@ -65,7 +66,7 @@ cache.invalidate = (name) => {
 app.post('/usuario', async (req, res) => {
     let User = req.body.Usuario;
     let Email = req.body.Email;
-    let Password = req.body.Senha;
+    let Password = await bcrypt.hash(req.body.Senha, 10);
     let insert = await Usuario.insert(User, Email, Password);
     switch (insert) {
         case 1:
@@ -88,7 +89,7 @@ app.post('/usuario', async (req, res) => {
             break;
     };
 });
-app.post('/login', async (req, res) => {
+app.post('/session', async (req, res) => {
     let User = req.body.Usuario;
     let Senha = req.body.Senha;
     if (User.length < 3) {
@@ -105,7 +106,8 @@ app.post('/login', async (req, res) => {
         res.send({Logado: false, msg: 'Usuario não cadastrado'});
         return;
     }
-    if (Cadastrado[0].Senha != Senha) {
+    let SenhaBanco = Cadastrado[0].Senha
+    if (await bcrypt.compare(Senha, SenhaBanco) === false) {
         res.send({Logado: false, msg: 'Senha incorreta'});
         return;
     }
@@ -130,7 +132,7 @@ app.get('/postagem', cache.route(), async (req, res) => {
 //    res.send({Postagem: Postagens});
 });
 
-app.get('/logout', (req, res) => {
+app.get('/session', (req, res) => {
     req.session.destroy();
     res.send({Logout: true});
 });

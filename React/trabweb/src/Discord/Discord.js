@@ -23,7 +23,7 @@ export default class Discord extends React.Component {
             },
             body: JSON.stringify(Corpo)
         };
-        fetch('http://localhost:8080/login', options)
+        fetch('http://localhost:8080/session', options)
             .then(Res => Res.json())
                 .then(Res => {
                     if (Res.Logado) {

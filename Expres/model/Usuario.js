@@ -14,7 +14,8 @@ module.exports = class Usuario {
             return 14;
         };
 
-        const conn = await MongoClient.connect(MongoURL);
+        let options = {maxPoolSize: 50};
+        const conn = await MongoClient.connect(MongoURL, options);
         const db = conn.db().collection('Usuarios');
         let jaCadastrado = await this.find(usuario, "User");
         if (jaCadastrado.length > 0) {
@@ -37,7 +38,8 @@ module.exports = class Usuario {
     };
 
     static async find(Usuario, Field) {
-        const conn = await MongoClient.connect(MongoURL);
+        let options = {maxPoolSize: 50};
+        const conn = await MongoClient.connect(MongoURL, options);
         const db = conn.db().collection('Usuarios');
         let result;
         if (Field === "User") {
@@ -50,7 +52,8 @@ module.exports = class Usuario {
     };
 
     static async attPost(Usuario) {
-        const conn = await MongoClient.connect(MongoURL);
+        let options = {maxPoolSize: 50};
+        const conn = await MongoClient.connect(MongoURL, options);
         const db = conn.db().collection('Usuarios');
         var Select = {User: Usuario};
         var Update = {$inc: {Postagens: 1}};
