@@ -16,9 +16,9 @@ export default class Logado extends React.Component {
         this.connsocket()
     }
 
-    logado(){
+    async logado(){
         if (!localStorage.getItem('Token')) {
-            window.location.href = "./";
+            return false
         }
         let url = 'http://localhost:8080/usuario/' + localStorage.getItem('Token')
         const options = {
@@ -45,13 +45,24 @@ export default class Logado extends React.Component {
 
     PostarTexto(){
         if (!localStorage.getItem('Token')) {
-            window.location.href = "./";
+            return false
         }
+        let url = 'http://localhost:8080/usuario/' + localStorage.getItem('Token')
+        let options = {
+            method: 'GET'
+        };
+        fetch(url, options)
+            .then(Res => Res.json())
+                .then(Res => {
+                    if (!(Res.Logado)) {
+                        this.logout();
+                    }
+                });
         let Corpo = {
             'token': localStorage.getItem('Token'),
             'Texto': this.state.Texto
         };
-        const options = {
+        options = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -84,11 +95,9 @@ export default class Logado extends React.Component {
         let Res = await fetch('http://localhost:8080/postagem', options)
         let Postagens = await Res.json()
         let Textos = [];
-        console.log(Postagens);
         Postagens.map(Post => {
             Textos.push(Post);
         });
-        console.log(Textos);
         this.setState({Feed: Textos});
     }
     

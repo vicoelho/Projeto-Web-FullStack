@@ -10,7 +10,10 @@ let http = require('http'),
     ws = require('ws'),
     WebSocket = ws.WebSocketServer,
     cache = require('express-redis-cache'),
-    bcrypt = require('bcrypt');
+    bcrypt = require('bcrypt'),
+    CreateClient = require('redis').createClient;
+
+const client = CreateClient()
 
 const server = new WebSocket({port: 8000});
 let conns = [];
@@ -90,29 +93,44 @@ app.post('/usuario', async (req, res) => {
     };
 });
 app.post('/session', async (req, res) => {
+    const ip = req.ip
+    const reqCount = Number((await client.get(ip)) || 0) + 1
+
+    if (reqCount > 3) {
+        res.send({Logado: false, msg: "Muitas tentativas, tente novamente mais tarde"});
+        return
+    }
+
     let User = req.body.Usuario;
     let Senha = req.body.Senha;
     if (User.length < 3) {
+        await client.set(ip, reqCount, {EX:30});
         res.send({Logado: false, msg: "Usuário inválido, mínimo 3 caracteres"});
         return;
     }
     if (Senha.length < 3) {
+        await client.set(ip, reqCount, {EX:30});
         res.send({Logado: false, msg: 'Senha inválida, minimo 3 caracteres'});
         return;
     }
     
+    
     let Cadastrado = await Usuario.find(User, "User");
     if (Cadastrado.length === 0) {
+        await client.set(ip, reqCount, {EX:30});
         res.send({Logado: false, msg: 'Usuario não cadastrado'});
         return;
     }
     let SenhaBanco = Cadastrado[0].Senha
     if (await bcrypt.compare(Senha, SenhaBanco) === false) {
+        await client.set(ip, reqCount, {EX:30});
         res.send({Logado: false, msg: 'Senha incorreta'});
         return;
     }
     req.session.token = Cadastrado[0].User;
     req.session.numpostagens = Cadastrado[0].Postagens;
+    console.log(req.ip)
+    console.log("token"+req.session.token)
     req.session.save();
     res.send({Logado: true, msg: '', User: Cadastrado[0].User, Postagens: Cadastrado[0].Postagens});
 });
@@ -128,8 +146,6 @@ app.get('/usuario/:id', async (req, res) => {
 });
 app.get('/postagem', cache.route(), async (req, res) => {
     res.json(await Postagem.Feed(req.body.Usuario, req.body.Tipo));
-//    let Postagens = await Postagem.Feed(req.body.Usuario, req.body.Tipo);
-//    res.send({Postagem: Postagens});
 });
 
 app.get('/session', (req, res) => {
@@ -138,6 +154,7 @@ app.get('/session', (req, res) => {
 });
 
 app.post('/postagem', cache.invalidate(), async (req, res) => {
+    console.log(req.body.token)
     let User = await Usuario.find(req.body.token, "User");
     let Post = req.body.Texto;
     if (User.length === 0) {
@@ -159,4 +176,10 @@ app.post('/postagem', cache.invalidate(), async (req, res) => {
     res.send({Logado:true, Post: true, msg: "Postado com sucesso", Postagens: PostNum[0].Postagens});
 });
 
-app.listen(8080)
+
+const iniciar = async () => {
+    await client.connect()
+    app.listen(8080)
+}
+
+iniciar()
