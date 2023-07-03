@@ -11,7 +11,8 @@ let http = require('http'),
     WebSocket = ws.WebSocketServer,
     cache = require('express-redis-cache'),
     bcrypt = require('bcrypt'),
-    CreateClient = require('redis').createClient;
+    CreateClient = require('redis').createClient,
+    mongoSanitize = require('express-mongo-sanitize');
 
 const client = CreateClient()
 
@@ -47,6 +48,12 @@ app.use(session({
     cookie: {secure: false}
 }));
 app.use(cors());
+app.use(
+    mongoSanitize({
+      allowDots: true,
+      replaceWith: '_',
+    }),
+  );
 
 cache = cache({
     prefix: 'redis',

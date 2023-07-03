@@ -58,6 +58,7 @@ export default class Logado extends React.Component {
                         this.logout();
                     }
                 });
+        
         let Corpo = {
             'token': localStorage.getItem('Token'),
             'Texto': this.state.Texto
